@@ -1,1 +1,1 @@
-A handful of tools for managing playlist content.
+A handful of tools for managing YouTube playlist content.
