@@ -183,7 +183,6 @@ def run(args):
                 f = open(args.exclusions, "a")
                 f.write("%s\n" % item['id'])
             added += 1
-#        print response
     print "Added %s videos" % added
 
 if __name__ == "__main__":
@@ -197,7 +196,6 @@ if __name__ == "__main__":
     argparser.add_argument("--norandom",  action='store_true')
     argparser.add_argument("--exclusions")
 
-#    argparser.add_parameter("channel", metavar="channel")
     
     args = argparser.parse_args()
     run(args)
