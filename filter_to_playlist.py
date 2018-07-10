@@ -91,37 +91,37 @@ def get_video_length(video_info):
         if bit in t:
             x, t = t.split(bit)
             bits[bit] = int(x)
-    
+
     seconds = int(bits.get('H', 0))*3600  + bits.get('M', 0) * 60 + bits.get('S', 0)
     return seconds
 
 def video_display(item):
-                seconds = get_video_length(item)
-                m, s = divmod(seconds, 60)
-                h, m = divmod(m, 60)
-                l = ""
-                if h:
-                    l = "%d:%02d:%02d" % (h, m, s)
-                else:
-                    l = "%d:%02d" % (m, s)
-                return "%s (%s)" % (item['snippet']['title'], l)
+    seconds = get_video_length(item)
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    l = ""
+    if h:
+        l = "%d:%02d:%02d" % (h, m, s)
+    else:
+        l = "%d:%02d" % (m, s)
+    return "%s (%s)" % (item['snippet']['title'], l)
 
 def add_video(playlist, item):
-        http = get_authenticated_service()
-        item = {
-            'snippet': {
-                'playlistId': playlist,
-                'resourceId': {
-                    'kind': 'youtube#video',
-                    'videoId': item['id']
-                },
-            }
+    http = get_authenticated_service()
+    item = {
+        'snippet': {
+            'playlistId': playlist,
+            'resourceId': {
+                'kind': 'youtube#video',
+                'videoId': item['id']
+            },
         }
-        pl_item = json.dumps(item)
-        meta, response = http.request("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", method="POST", body=pl_item, headers={"Content-Type": "application/json"})
-        data = json.loads(response)
-        if 'error' in data: 
-            print data
+    }
+    pl_item = json.dumps(item)
+    meta, response = http.request("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", method="POST", body=pl_item, headers={"Content-Type": "application/json"})
+    data = json.loads(response)
+    if 'error' in data:
+        print data
 
 def run(args):
     http = get_authenticated_service()
@@ -143,7 +143,7 @@ def run(args):
     for i in ids:
         if i not in exclude_ids:
             filtered_ids.append(i)
-    print "Filtered to %s items" % len(filtered_ids)        
+    print "Filtered to %s items" % len(filtered_ids)
     playlist_items = []
     for i in range(0, len(filtered_ids), 50):
         joined_vids = ",".join(filtered_ids[i:i+50])
@@ -163,13 +163,13 @@ def run(args):
     print "Found %s items after length filter" % len(playlist_items)
     if not args.norandom:
         random.shuffle(playlist_items)
-    
+
     added = 0
     for ordinal, item in enumerate(playlist_items):
         if args.max_items and added >= args.max_items:
             break
         if args.ask:
-            q = "Add %s?" % video_display(item) 
+            q = "Add %s?" % video_display(item)
             a = raw_input(q)
             if a.lower() in ('y', 'yes'):
                 add_video(args.target_playlist, item)
@@ -196,6 +196,5 @@ if __name__ == "__main__":
     argparser.add_argument("--norandom",  action='store_true')
     argparser.add_argument("--exclusions")
 
-    
     args = argparser.parse_args()
     run(args)
