@@ -151,6 +151,9 @@ def run(args):
         status, response = http.request(url)
         data = json.loads(response)
         for item in data['items']:
+            if args.use_playlist_filter:
+                if not playlist_filter(item):
+                    continue
             if args.length or args.min_length:
                 length = get_video_length(item)
                 if args.min_length and length < args.min_length:
@@ -193,6 +196,7 @@ if __name__ == "__main__":
     argparser.add_argument("--length", metavar="max", type=int)
     argparser.add_argument("--min_length", metavar="min", type=int)
     argparser.add_argument("--ask", action='store_true')
+    argparser.add_argument("--use_playlist_filter", action='store_true')
     argparser.add_argument("--norandom",  action='store_true')
     argparser.add_argument("--exclusions")
 
